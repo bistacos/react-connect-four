@@ -13,17 +13,20 @@
     padding: 0;
     margin: 0;
     float: left;
-    outline: 3px solid #b4b4b4;
+    border: 6px solid #b4b4b4;
+    border-radius: 6px;
 }
 
 #game .tile {
+    background-color: #ADD8E6;
     width: 100px;
     height: 100px;
-    outline: 2px solid #b4b4b4;
+    outline: 4px solid #b4b4b4;
     float: left;
     line-height: 88px;
     text-align: center;
-    font-size: 50px;
+    font-size: 75px;
+    font-weight: 'bold';
 }
 
 #menu {

@@ -35,37 +35,67 @@
 
       // array of numbers that mean there can't be a horizontal winner,
       // i.e. a win by wrapping around to the next row
-      var forbiddenHorizIndeces = [
-        4,5,6,
-        11,12,13,
-        18,19,20,
-        25,26,27,
-        32,33,34
-      ];
+      var forbiddenHorizIndices = [4,5,6,11,12,13,18,19,20,25,26,27,32,33,34];
+      // logic to check for a winner horizontally
       for (var i = 0, l = 42; i < l; i++) {
-        if ( forbiddenHorizIndeces.indexOf(i) > -1 ) {
-          continue;
-        }
+        if ( forbiddenHorizIndices.indexOf(i) > -1 ) { continue; }
         var checkHoriz = check(t[i], t[i+1], t[i+2], t[i+3]);
         if (checkHoriz) {
           return t[i];
         }
       }
 
-      // // Deprecated tic tac toe logic
-      // if (check(t[0], t[1], t[2])) return t[0];
-      // if (check(t[3], t[4], t[5])) return t[3];
-      // if (check(t[6], t[7], t[8])) return t[6];
+      // logic to check for a winner vertically
+      for (var i = 0, l = 21; // no vertical winners possible past this index
+            i < l; i++) {
+        var checkVert = check(t[i], t[i+7], t[i+14], t[i+21]);
+        if (checkVert) {
+          return t[i];
+        }
+      }
 
-      // if (check(t[0], t[3], t[6])) return t[0];
-      // if (check(t[1], t[4], t[7])) return t[1];
-      // if (check(t[2], t[5], t[8])) return t[2];
-      
-      // if (check(t[0], t[4], t[8])) return t[0];
-      // if (check(t[2], t[4], t[6])) return t[2];
+      // array of numbers that preclude a down-to-right diagonal winner
+      // i.e. a win by wrapping around the board
+      var forbiddenDownRightIndices = [4,5,6,11,12,13,18,19,20];
+      // logic to check for a winner diagonally down-to-the-right
+      for (var i = 0, l = 21; i < l; i++) { 
+        if ( forbiddenDownRightIndices.indexOf(i) > -1 ) { continue; }
+        var checkDR = check(t[i], t[i+8], t[i+16], t[i+24]);
+        if (checkDR) {
+          return t[i];
+        }
+      }
 
+     // array of numbers that preclude a down-to-left diagonal winner
+      // i.e. a win by wrapping around the board
+      var forbiddenDownLeftIndices = [0,1,2,7,8,9,14,15,16];
+      // logic to check for a winner diagonally down-to-the-right
+      for (var i = 0, l = 21; i < l; i++) { 
+        if ( forbiddenDownLeftIndices.indexOf(i) > -1 ) { continue; }
+        var checkDL = check(t[i], t[i+6], t[i+12], t[i+18]);
+        if (checkDL) {
+          return t[i];
+        }
+      }
+
+      // no winner yet found, return d for draw if board full, otherwise return 'n'
       if (t.join('').length === 42) return 'd';
       return 'n';
+    },
+
+    // helper function for tileClick to find the lowest position
+    // in a column that isn't occupied
+    lowestOpenPosInColumn: function (position, tiles) {
+      // find (zero-indexed) column
+      var column = position % 7;
+
+      for (var i = (35 + column); i > -1; i -= 7) {
+        if ( tiles[i] === 'x' || (tiles[i] === 'o') ) {
+          continue;
+        } else {
+          return i;
+        }
+      }
     },
 
     tileClick: function(position, player) {
@@ -75,7 +105,9 @@
           (tiles[position] === 'x' || tiles[position] === 'o') ||
           (this.state.winner !== 'n')
         ) { return; }
-      tiles[position] = player;
+
+      var newPos = this.lowestOpenPosInColumn(position, tiles);
+      tiles[newPos] = player;
       this.setState({tiles: tiles, turn: player === 'o' ? 'x' : 'o',
         winner: this.checkBoard()
       });
@@ -117,7 +149,7 @@
       return <div id="menu">
         <h3 className={this.props.winner === 'n' ? 'visible' : 'hidden'}>Player {this.props.turn}'s turn.</h3>
         <h3 className={(this.props.winner === 'n') || (this.props.winner=== 'd') ? 'hidden' : 'visible'}>Player {this.props.winner} won!</h3>
-        <h3 className={this.props.winner === 'd' ? 'visible' : 'hidden'}>Draw Game </h3>
+        <h3 className={this.props.winner === 'd' ? 'visible' : 'hidden'}>Tie Game </h3>
         <button onClick={this.props.resetAction}>Reset Game</button>
       </div>;
     }

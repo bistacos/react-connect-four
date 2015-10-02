@@ -29,6 +29,14 @@
     font-weight: 'bold';
 }
 
+h1 {
+    margin: 10px auto;
+    width: 500px;
+    float: center;
+    padding-left: 35px;
+    text-align: center;
+}
+
 #menu {
     height: 306px;
     width: 150px;
